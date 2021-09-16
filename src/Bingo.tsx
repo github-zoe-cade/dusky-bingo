@@ -87,22 +87,21 @@ export const Bingo = (): JSX.Element => {
   const pickTodayItems = (): BingoItem[] =>
     sanitizeItems(pickElements(data, new Date().toDateString()))
 
+  const params = new URLSearchParams(window.location.search)
+
   const [items, setItems] = useState<BingoItem[]>([])
   const [bingo, setBingo] = useState(false)
+  const [todayGrid, setTodayGrid] = useState(params.get("today") === "true")
+  const [todayItems] = useState(pickTodayItems())
 
   const shuffle = () => {
     setItems(pickRandomItems())
     setBingo(false)
-    window.history.replaceState({}, "", "/")
+    setTodayGrid(false)
+    window.history.replaceState({}, "", "?")
   }
 
   useEffect(() => {
-    const route = window.location.pathname
-    if (route === "/today") {
-      return setItems(pickTodayItems())
-    }
-
-    const params = new URLSearchParams(window.location.search)
     const ids = params.get("ids")
 
     if (ids) {
@@ -122,6 +121,10 @@ export const Bingo = (): JSX.Element => {
   }, [])
 
   useEffect(() => {
+    todayGrid && setItems(todayItems)
+  }, [todayGrid])
+
+  useEffect(() => {
     const checkBingo = () => {
       const checkedItemRanks = items.filter((x) => x.done).map((x) => x.rank)
       const combinations = computeCombinations(nbRows, nbColums)
@@ -138,7 +141,6 @@ export const Bingo = (): JSX.Element => {
   const toggleItem = (item: BingoItem) => {
     setItems(items.map((x) => (item.id === x.id ? { ...x, done: !x.done } : x)))
   }
-
   return (
     <Container>
       <Title>Dusky bingo</Title>
@@ -149,6 +151,7 @@ export const Bingo = (): JSX.Element => {
           shuffle={shuffle}
           setBingo={setBingo}
           setItems={setItems}
+          setTodayGrid={setTodayGrid}
         />
         <Grid>
           {items.map(

@@ -25,10 +25,18 @@ type Props = {
   initializeStatusForItems: (items: BingoItem[]) => UncompleteBingoItem[]
   setBingo: (bingo: boolean) => void
   setItems: (items: BingoItem[]) => void
+  setTodayGrid: (todayGrid: boolean) => void
   shuffle: () => void
 }
 
-export const Menu = ({ items, initializeStatusForItems, setBingo, setItems, shuffle }: Props) => {
+export const Menu = ({
+  items,
+  initializeStatusForItems,
+  setBingo,
+  setItems,
+  setTodayGrid,
+  shuffle,
+}: Props) => {
   const [urlShared, setUrlShared] = useState(false)
 
   useEffect(() => {
@@ -44,13 +52,18 @@ export const Menu = ({ items, initializeStatusForItems, setBingo, setItems, shuf
 
   const share = async () => {
     const orderedIds: number[] = items.sort((a, b) => a.rank - b.rank).map((x) => x.id)
-    const url = new URL(window.location.origin)
+    const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
     params.set("ids", orderedIds.toString())
     url.search = params.toString()
 
     await navigator.clipboard.writeText(url.toString())
     setUrlShared(true)
+  }
+
+  const showToday = () => {
+    window.history.replaceState({}, "", "?today=true")
+    setTodayGrid(true)
   }
 
   return (
@@ -61,7 +74,7 @@ export const Menu = ({ items, initializeStatusForItems, setBingo, setItems, shuf
       <Button onClick={share} disabled={urlShared}>
         {urlShared ? "Url copiée ✔" : "Partager la grille"}
       </Button>
-      <Button onClick={() => window.location.replace("today")}>Grille du jour</Button>
+      <Button onClick={showToday}>Grille du jour</Button>
     </MenuContainer>
   )
 }
