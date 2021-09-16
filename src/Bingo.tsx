@@ -14,7 +14,7 @@ import { Menu } from "./Bingo/Menu"
 const Container = styled.div`
   background-image: url(${Background});
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
   background-size: cover;
 `
 
@@ -32,8 +32,9 @@ const Content = styled.div`
   gap: 3rem;
   margin: 2rem 5rem;
 
-  @media (max-width: 900px) {
+  @media (max-width: 1050px) {
     grid-template-columns: 1fr;
+    margin: 1rem;
   }
 `
 
@@ -44,6 +45,11 @@ const Grid = styled.div`
   background-color: ${theme.colors.violet};
   border: 3px solid ${theme.colors.blue};
   position: relative;
+
+  @media (max-width: 1050px) {
+    width: 100%;
+    grid-row-start: 1;
+  }
 `
 
 const BingoContainer = styled.div`

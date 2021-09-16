@@ -23,6 +23,11 @@ const Container = styled.div<{ done: boolean }>`
   &:active {
     opacity: 0.8;
   }
+
+  @media (max-width: 1050px) {
+    padding: 0.5rem 0.2rem;
+    font-size: 0.8rem;
+  }
 `
 
 const Cross = styled.div<{ done: boolean; isHover: boolean }>`
@@ -68,7 +73,7 @@ export const GridItem = ({ item, toggleItem }: GridItemProps): JSX.Element => {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <Cross done={item.done} isHover={isHover} />
+      <Cross done={item.done} isHover={isHover} alt-text="checked" />
       {item.text}
     </Container>
   )
